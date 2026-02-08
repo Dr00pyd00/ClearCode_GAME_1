@@ -20,7 +20,7 @@ x = 100
 # player_aircraft:
 player_surf = pygame.image.load(join('images', 'player.png')).convert_alpha()
 player_rect = player_surf.get_frect(center= (WINDOWS_WIDTH/2, WINDOWS_HEIGHT/2))
-player_direction = pygame.math.Vector2(1,0)
+player_direction = pygame.math.Vector2(1,-1)
 player_speed = 300
 
 
@@ -43,13 +43,15 @@ while running:
     # framerate:
     # dt datatime = ce qu'on divise poru avoir la bonn,e vitesse en focntion du framerate:
     # delta time = temps qu'il faut pour creer UNE frame en MILLISCONDS 
-    dt = clock.tick(10) / 1000 # pour avoir en secondes
+    dt = clock.tick(24) / 1000 # pour avoir en secondes
 
 
     # event loop
     for event in  pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            print(event.key == pygame.K_3)
 
     # draw the game
         # fond:
@@ -65,9 +67,28 @@ while running:
     display_surface.blit(laser_surf, laser_rect)
 
         # player:
+    player_rect.center += player_direction * player_speed * dt
+
+            # dvd mvt:
+    if player_rect.top <= 0:
+        player_rect.top = 0
+        player_direction.y *= -1 
+    elif player_rect.bottom >= WINDOWS_HEIGHT:
+        player_rect.bottom = WINDOWS_HEIGHT
+        player_direction.y *= -1
+
+    if player_rect.right >= WINDOWS_WIDTH:
+        player_rect.right = WINDOWS_WIDTH
+        player_direction.x *= -1
+    elif player_rect.left <= 0:
+        player_rect.left = 0
+        player_direction.x *= -1
+
+
     display_surface.blit(player_surf, player_rect )
-   
-    player_rect.center += player_direction * player_speed * dt  
+        
+    
+      
    
 
     pygame.display.update()
